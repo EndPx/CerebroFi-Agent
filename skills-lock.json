@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "slack-gif-creator": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "computedHash": "e6ba2e516960ee584328162d2e16aa7fc7c800d807b87866c20f19c8419644f9"
+    }
+  }
+}

@@ -83,7 +83,7 @@ export const Header = () => {
         </details>
         <Link href="/" passHref className="hidden lg:flex items-center gap-2 ml-4 mr-6 shrink-0">
           <div className="flex relative w-10 h-10">
-            <span className="text-3xl">🧠</span>
+            <Image src="/logo.png" alt="CerebroFi Logo" fill className="object-contain" />
           </div>
           <div className="flex flex-col">
             <span className="font-bold leading-tight">CerebroFi</span>
