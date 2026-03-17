@@ -1,83 +1,163 @@
-# 🏗 Scaffold-ETH 2
+# 🧠 CerebroFi Agent
 
-<h4 align="center">
-  <a href="https://docs.scaffoldeth.io">Documentation</a> |
-  <a href="https://scaffoldeth.io">Website</a>
-</h4>
+> **Fully autonomous, privacy-preserving AI treasury management on Base L2.**
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on the Ethereum blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+CerebroFi is an autonomous AI agent that manages a crypto treasury without human intervention. It analyzes market conditions via **Venice AI** (privacy-preserving inference), then executes yield-optimizing strategies through **Uniswap V3** swaps and **Lido** staking — all on-chain on **Base L2**.
 
-> [!NOTE]
-> 🤖 Scaffold-ETH 2 is AI-ready! It has everything agents need to build on Ethereum. Check `.agents/`, `.claude/`, `.opencode` or `.cursor/` for more info.
+![CerebroFi Dashboard](packages/nextjs/public/logo.png)
 
-⚙️ Built using NextJS, RainbowKit, Hardhat, Wagmi, Viem, and Typescript.
-
-- ✅ **Contract Hot Reload**: Your frontend auto-adapts to your smart contract as you edit it.
-- 🪝 **[Custom hooks](https://docs.scaffoldeth.io/hooks/)**: Collection of React hooks wrapper around [wagmi](https://wagmi.sh/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://docs.scaffoldeth.io/components/): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Local Faucet**: Quickly test your application with a burner wallet and local faucet.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with the Ethereum network.
-
-![Debug Contracts tab](https://github.com/scaffold-eth/scaffold-eth-2/assets/55535804/b237af0c-5027-4849-a5c1-2e31495cccb1)
-
-## Requirements
-
-Before you begin, you need to install the following tools:
-
-- [Node (>= v20.18.3)](https://nodejs.org/en/download/)
-- Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
-- [Git](https://git-scm.com/downloads)
-
-## Quickstart
-
-To get started with Scaffold-ETH 2, follow the steps below:
-
-1. Install dependencies if it was skipped in CLI:
+## 🏗 Architecture
 
 ```
-cd my-dapp-example
+┌──────────────────────────────────────────────────────┐
+│                    CerebroFi Agent                    │
+│                                                      │
+│  ┌─────────┐    ┌──────────┐    ┌──────────────────┐ │
+│  │ OBSERVE │───▶│  REASON  │───▶│       ACT        │ │
+│  │         │    │          │    │                  │ │
+│  │ Read    │    │ Venice   │    │ Sign + Execute   │ │
+│  │ On-Chain│    │ AI API   │    │ Uniswap / Lido   │ │
+│  │ State   │    │ (Private)│    │ Transactions     │ │
+│  └─────────┘    └──────────┘    └──────────────────┘ │
+│       ▲                                    │         │
+│       └────────────── 60s Loop ────────────┘         │
+└──────────────────────────────────────────────────────┘
+                         │
+                         ▼
+         ┌───────────────────────────┐
+         │  AutoYieldTreasury.sol    │
+         │  (Base L2 Smart Contract) │
+         │                           │
+         │  • swapUSDCForWETH()      │
+         │  • swapWETHForUSDC()      │
+         │  • stakeETHToLido()       │
+         │  • Owner deposit/withdraw │
+         └───────────────────────────┘
+```
+
+## 🔑 Key Features
+
+- **🤖 Fully Autonomous** — The agent runs 24/7, making yield decisions without human approval
+- **🔐 Privacy-Preserving** — Uses Venice AI for encrypted LLM inference (no MEV/front-running)
+- **💱 Uniswap V3 Integration** — Swaps between USDC ↔ WETH with optimal routing
+- **🏦 Lido Staking** — Stakes idle ETH into wstETH for ~3.2% APY
+- **🛡 Scoped Permissions** — The agent can only rebalance; it cannot withdraw funds
+- **📊 Live Dashboard** — Real-time treasury monitoring with glassmorphism UI
+
+## 🎯 Hackathon Bounties
+
+Built for **The Synthesis Hackathon** targeting:
+
+| Bounty | Integration |
+|--------|------------|
+| **Venice ($11.5K)** | Privacy-preserving AI inference for yield analysis |
+| **Protocol Labs ($8K)** | Fully autonomous agent with on-chain execution |
+| **Lido ($3K)** | ETH staking via wstETH |
+| **Uniswap ($2.5K)** | DEX swaps via Uniswap V3 Router |
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js v18+
+- Yarn v3
+- Git
+
+### 1. Clone & Install
+
+```bash
+git clone https://github.com/EndPx/CerebroFi-Agent.git
+cd CerebroFi-Agent
 yarn install
 ```
 
-2. Run a local network in the first terminal:
+### 2. Generate a Wallet
 
+```bash
+yarn generate
 ```
+
+### 3. Start Local Chain (with Base Fork)
+
+```bash
 yarn chain
 ```
 
-This command starts a local Ethereum network using Hardhat. The network runs on your local machine and can be used for testing and development. You can customize the network configuration in `packages/hardhat/hardhat.config.ts`.
+### 4. Deploy Contracts
 
-3. On a second terminal, deploy the test contract:
-
-```
+```bash
+# In a new terminal
 yarn deploy
 ```
 
-This command deploys a test smart contract to the local network. The contract is located in `packages/hardhat/contracts` and can be modified to suit your needs. The `yarn deploy` command uses the deploy script located in `packages/hardhat/deploy` to deploy the contract to the network. You can also customize the deploy script.
+### 5. Start Frontend Dashboard
 
-4. On a third terminal, start your NextJS app:
-
-```
+```bash
 yarn start
 ```
 
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
+Open [http://localhost:3000](http://localhost:3000)
 
-Run smart contract test with `yarn hardhat:test`
+### 6. Start the Agent Brain
 
-- Edit your smart contracts in `packages/hardhat/contracts`
-- Edit your frontend homepage at `packages/nextjs/app/page.tsx`. For guidance on [routing](https://nextjs.org/docs/app/building-your-application/routing/defining-routes) and configuring [pages/layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts) checkout the Next.js documentation.
-- Edit your deployment scripts in `packages/hardhat/deploy`
+```bash
+cd packages/nextjs
+cp .env.example .env.local
+# Edit .env.local with your AGENT_PRIVATE_KEY and TREASURY_ADDRESS
+yarn agent:start
+```
 
+## 📁 Project Structure
 
-## Documentation
+```
+auto-yield-agent/
+├── packages/
+│   ├── hardhat/
+│   │   ├── contracts/
+│   │   │   └── AutoYieldTreasury.sol    # Core treasury contract
+│   │   └── deploy/
+│   │       └── 01_deploy_treasury.ts    # Deployment script
+│   └── nextjs/
+│       ├── agent/
+│       │   └── loop.ts                  # 🧠 Autonomous agent brain
+│       ├── app/
+│       │   └── page.tsx                 # Dashboard UI
+│       └── components/
+│           ├── AgentLog.tsx             # CRT terminal agent log
+│           └── Header.tsx              # Navigation with logo
+```
 
-Visit our [docs](https://docs.scaffoldeth.io) to learn how to start building with Scaffold-ETH 2.
+## 🔧 Smart Contract
 
-To know more about its features, check out our [website](https://scaffoldeth.io).
+**`AutoYieldTreasury.sol`** — Deployed on Base L2
 
-## Contributing to Scaffold-ETH 2
+- **Owner Functions:** `depositERC20()`, `withdrawETH()`, `withdrawERC20()`
+- **Agent Functions:** `swapUSDCForWETH()`, `swapWETHForUSDC()`, `stakeETHToLido()`
+- **Security:** `onlyAgentOrOwner` modifier, `ReentrancyGuard`, `Ownable`
 
-We welcome contributions to Scaffold-ETH 2!
+## 🧠 Agent Loop
 
-Please see [CONTRIBUTING.MD](https://github.com/scaffold-eth/scaffold-eth-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-ETH 2.
+The agent runs in an infinite loop with a 60-second interval:
+
+1. **OBSERVE** — Reads ETH, USDC, WETH, wstETH balances from the treasury via viem
+2. **REASON** — Sends portfolio state to Venice AI (`llama-3.3-70b`) for private analysis
+3. **ACT** — Executes the recommended on-chain transaction (swap or stake)
+4. **SLEEP** — Waits 60 seconds and repeats
+
+Venice AI returns structured JSON decisions: `stake`, `swap_usdc_to_weth`, `swap_weth_to_usdc`, or `hold`.
+
+## 🛡 Security
+
+- Agent wallet has **scoped permissions** — can only call rebalancing functions
+- Agent **cannot** withdraw funds to itself
+- Owner retains full deposit/withdrawal control
+- Venice AI provides **encrypted inference** — market analysis is private and MEV-resistant
+- Smart contract uses OpenZeppelin's `ReentrancyGuard` and `SafeERC20`
+
+## 🏆 Team
+
+**CerebroFi Agent** — Built by EndPx for The Synthesis Hackathon 2026
+
+## 📜 License
+
+MIT
